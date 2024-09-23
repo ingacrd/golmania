@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Cache;
 use Carbon\Carbon; //  date comparison
+use Illuminate\Support\Facades\Log;
 
 class FixtureController extends Controller
 {
@@ -21,8 +22,10 @@ class FixtureController extends Controller
     // List all fixtures or get from API and store in DB
     public function index()
     {
+        Log::info('FIXTURES CALLED======');
         $existingFixtures = Fixture::count();
 
+        Log::info('Existing fixtures:', $existingFixtures);
         if ($existingFixtures > 0) {
             return $this->updateFixtures();
         } else {
@@ -49,6 +52,7 @@ class FixtureController extends Controller
         foreach ($fixturesToUpdate as $fixture) {
             // Fetch updated data from the external API using fixtureId
             $apiData = $this->fixtureService->getFixtureById($fixture->fixtureId);
+            Log::info('API Response:', $apiData);
 
             // Check if the API has response
             if (!empty($apiData['response'])) {
@@ -77,9 +81,11 @@ class FixtureController extends Controller
     private function fetchAndStoreFixtures()
     {
         //There is no fixtures on the database
-        $apiData = Cache::remember('fixtures_league_34_season_2026', 60 * 60 * 24, function () {
-            return $this->fixtureService->getFixturesByLeagueAndSeason('34', '2026');
-        });
+        // $apiData = Cache::remember('fixtures_league_34_season_2026', 60 * 60 * 24, function () {
+        //     return $this->fixtureService->getFixturesByLeagueAndSeason('34', '2026');
+        // });
+        $apiData = $this->fixtureService->getFixturesByLeagueAndSeason('34', '2026');
+        Log::info('API Response:', $apiData);
 
         $updatedFixtures = [];
 
