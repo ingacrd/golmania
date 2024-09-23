@@ -25,7 +25,8 @@ class FixtureController extends Controller
         Log::info('FIXTURES CALLED======');
         $existingFixtures = Fixture::count();
 
-        Log::info('Existing fixtures:', $existingFixtures);
+        Log::info('Existing fixtures:', ['count' => $existingFixtures]);
+
         if ($existingFixtures > 0) {
             return $this->updateFixtures();
         } else {
@@ -52,7 +53,9 @@ class FixtureController extends Controller
         foreach ($fixturesToUpdate as $fixture) {
             // Fetch updated data from the external API using fixtureId
             $apiData = $this->fixtureService->getFixtureById($fixture->fixtureId);
-            Log::info('API Response:', $apiData);
+
+            Log::info('API Response:', ['data' => $apiData]);
+
 
             // Check if the API has response
             if (!empty($apiData['response'])) {
@@ -85,7 +88,8 @@ class FixtureController extends Controller
         //     return $this->fixtureService->getFixturesByLeagueAndSeason('34', '2026');
         // });
         $apiData = $this->fixtureService->getFixturesByLeagueAndSeason('34', '2026');
-        Log::info('API Response:', $apiData);
+        Log::info('API Response:', ['data' => $apiData]);
+
 
         $updatedFixtures = [];
 
